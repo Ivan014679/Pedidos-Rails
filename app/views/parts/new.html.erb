@@ -1,0 +1,45 @@
+<br />
+<%if @part.errors.any? %>
+    <div id="error_explanation">
+        <h2><%= pluralize(@part.errors.count, "Error") %>
+        No es posible realizar la acción :</h2>
+        <ul>
+            <%@part.errors.full_messages.each do |msg|%>
+                <li><%= msg %></li>
+            <%end%>
+        </ul>
+    </div>
+<%end%>
+
+<br />
+
+<%if @part.id == nil%>
+    <%@action_name = "create"%>
+    <%else%>
+    <%@action_name = "update"%>
+<%end%>
+
+<div class="formbody">
+    <div class="container">
+        <div class="form-group">
+            <%=button_to "Volver atrás", {controller: "parts", action: "index"}, class: "btn btn-secondary" %>
+        </div>
+
+        <p class="h2 text-center">Nueva parte</p>
+        <%=form_for :part, url:@action_name do |part_form|%>
+            <div class="form-group">
+                <%= part_form.label("Descripción: ") %>
+                <%= part_form.text_field :description, placeholder: "Ingrese una descripción para la parte", :required => true, class: "form-control"%>
+            </div>
+
+            <div class="form-group">
+                <% if @part.id == nil %>
+                    <%= part_form.submit "Crear", class: "btn btn-primary btn-block" %>
+                <% else %>
+                    <%= part_form.hidden_field :id %>
+                    <%= part_form.submit "Actualizar", class: "btn btn-primary btn-block" %>
+                <% end %>
+            </div>
+        <%end%>
+    </div>
+</div>

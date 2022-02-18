@@ -1,0 +1,52 @@
+<div class="form-group" style="width: 800px; height: 800px; margin: 0 auto; margin-top: 50px; border-radius: 10px; border-radius: 05px;">
+    <h1>Vendedores</h1>
+    <br>
+    <table id="table" class="display table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Ciudad</th>
+                <th>Tel&eacute;fono</th>
+                <th>Regi&oacute;n</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%@all_vendors.each do |x|%>
+            <tr>
+                <td><%=x.name%></td>
+                <td><%=x.address%></td>
+                <td><%=x.city_name%></td>
+                <td><%=x.phone%></td>
+                <td><%=x.region_name%></td>
+                <td>
+                    <%= link_to controller: "vendors", action: "edit", id:x.id do %>
+                        <i class="far fa-edit fa-2x"></i>
+                    <% end %>
+                </td>
+                <td>
+                    <%= link_to controller: "vendors", action: "delete", id:x.id, data: { confirm: '¿Estás seguro?' } do %>
+                        <i class="far fa-trash-alt fa-2x"></i>
+                    <% end %>
+                </td>
+            </tr>
+            <%end%>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Nombre</th>
+                <th>Dirección</th>
+                <th>Ciudad</th>
+                <th>Tel&eacute;fono</th>
+                <th>Regi&oacute;n</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <%= button_to "Crear un nuevo vendedor", {controller: "vendors", action: "new"}, class: "btn btn-secondary" %>
+</div>
+

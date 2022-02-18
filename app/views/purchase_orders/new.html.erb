@@ -1,0 +1,178 @@
+<style type="text/css">
+  #modal {
+      width: 700px;
+      height: 75vh;
+      top: -100vh;
+      margin: 0 auto;
+      margin-top: 50px;
+      border-radius: 05px;
+      position: absolute;
+      left: 50vh;
+      background: rgba(0, 40, 80, .3);
+      transition: all .5s;
+      color: white;
+  }
+  
+  .show-modal {
+      top: 0!important;
+  }
+
+  .hide-main {
+      display: none;
+  }
+
+  #close-modal {
+      float: right;
+      clear: right;
+  }
+</style>
+<script>
+    $(document).on("ready", function(){
+        $("#show-modal").on("click", function(){
+            $("#modal").addClass("show-modal");
+            $("#main").addClass("hide-main");
+        });
+
+        $("#close-modal").on("click", function(){
+            $("#modal").removeClass("show-modal");
+            $("#main").removeClass("hide-main");
+        });
+
+        $("#create_order_details").on("click", function(){
+            var id = this.parentElement.id;
+            var quantity = $('#quantity_'+id).text();
+
+            $.ajax({
+                url:'../order_details/create',
+                method:'POST',
+                data:{id: id, quantity: quantity},
+                success: function(data){}
+            })
+        });
+
+        /*$("#purchase_order_vendor").on('change', function(){
+            var id = $("#purchase_order_id").val();
+            var bill_number = $("#purchase_order_bill_number").val();
+            var date = $("#purchase_order_date").val();
+            var vendor = $("#purchase_order_vendor option:selected").val();            
+
+            update(id, bill_number, date, vendor);
+        });*/
+    })
+
+    /*function add_order_details(id){
+        var quantity = $("#quantity_"+id).val();
+
+        order_details(id, quantity);
+    }
+
+    function order_details(id, quantity){
+        $.ajax({
+            url:'../order_details/create',
+            method:'POST',
+            data:{id: id, quantity: quantity},
+            success: function(data){}
+        })
+    }*/
+</script>
+
+<%if @pch_ord.id == nil%>
+    <%@action_name = "create"%>
+    <%if @get_lastid_pch_ord == 0%>
+        <%= pch_ord_form.hidden_field :id, :value => 1 %>
+    <%else%>
+        <%= pch_ord_form.hidden_field :id, :value => @pch_ord.id%>
+    <%end%> 
+<%else%>
+    <%@action_name = "update"%>
+<%end%>
+
+<div class="formbody" id="main">
+    <div class="container">
+
+        <p class="h2 text-center">Orden de compra</p>        
+        <%=form_for :purchase_order, url:@action_name do |pch_ord_form|%>     
+            <div class="form-group">
+                <%= pch_ord_form.label("No. Factura: ") %>
+                <%= pch_ord_form.text_field :bill_number, placeholder: "Número de factura", :value => @pch_ord.bill_number, :readonly => true, class: "form-control"%>
+            </div>
+            <div class="form-group">
+                <%= pch_ord_form.label("Fecha: ") %>
+                <%= pch_ord_form.date_field :date, placeholder: "Fecha", :value => @pch_ord.date, :readonly => true, class: "form-control"%>
+            </div>
+            <div class="form-group">
+                <%= pch_ord_form.label("Vendedor: ") %>
+                <%= pch_ord_form.collection_select(:vendor, Vendor.all, :id, :name, {:selected => @pch_ord.vendor, prompt: "Selecciona un vendedor"}, class: "form-control") %>
+            </div>
+            <div class="form-group">
+                <%= pch_ord_form.label("Total: ") %>
+                <input class="form-control", id="total" name="total" value=0 placeholder="Total a pagar" type="text" readonly>
+                <input type="hidden" id="total" name="total" value=0>
+            </div>
+
+            <div class="container form-group">
+                <div class="row">
+                    <div class="col-md-2">
+                        <a href="#" id="show-modal", class="btn btn-secondary">
+                            <span>+</span>
+                        </a>
+                    </div>
+                    <div class="col-md-10">
+                        <% if @pch_ord.id == nil %>
+                            <%= pch_ord_form.submit "Comprar", class: "btn btn-primary btn-block" %>
+                        <% else %>
+                            <%= pch_ord_form.hidden_field :id, :value => @pch_ord.id%>
+                            <%= pch_ord_form.submit "Comprar", class: "btn btn-primary btn-block" %>
+                        <% end %>
+                    </div>
+                </div>
+            </div>
+        <%end%>
+    </div>
+</div>
+
+<div id="modal" class="container">
+    <div class="row" style="background: rgb(0, 40, 80); color: white; border-radius: 05px;">
+        <div class="col-md-10">
+            <p class="h2 text-left">Productos</p>
+        </div>
+        <div class="col-md-2">
+            <a href="#" id="close-modal" class="btn btn-danger"><span class="closebtn">&times;</span></a>        
+        </div>
+    </div>
+    <br />
+    <div class="formbody">
+        <table id="table" class="display table table-hover">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>A&ntilde;adir</th>
+                </tr>
+            </thead>
+            <tbody>
+                <%@products.each do |x|%>
+                <tr>
+                    <td><%=x.part_description%></td>
+                    <td><%=x.price%></td>
+                    <td id="quantity_<%=x.id%>", value="<%=x.quantity%>", contenteditable><%=x.quantity%></td>
+                    <td id="<%=x.id%>">
+                        <%= link_to "#", {id: "create_order_details", value: "quantity_#{x.id}"}, remote: true do %>
+                            <i class="fas fa-plus-circle fa-2x"></i>
+                        <% end %>                        
+                    </td>
+                </tr>
+                <%end%>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>A&ntilde;adir</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</div>

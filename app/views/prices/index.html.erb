@@ -1,0 +1,48 @@
+<div class="form-group" style="width: 800px; height: 800px; margin: 0 auto; margin-top: 50px; border-radius: 10px; border-radius: 05px;">
+    <h1>Precios</h1>
+    <br>
+    <table id="table" class="display table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Vendedor</th>
+                <th>Parte</th>
+                <th>N&uacute;mero de cat&aacute;logo</th>
+                <th>Precio</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%@all_prices.each do |x|%>
+            <tr>
+                <td><%=x.vendor_name%></td>
+                <td><%=x.part_description%></td>
+                <td><%=x.catalog_no%></td>
+                <td><%=x.price%></td>
+                <td>
+                    <%= link_to controller: "prices", action: "edit", id:x.id do %>
+                        <i class="far fa-edit fa-2x"></i>
+                    <% end %>
+                </td>
+                <td>
+                    <%= link_to controller: "prices", action: "delete", id:x.id, data: { confirm: '¿Estás seguro?' } do %>
+                        <i class="far fa-trash-alt fa-2x"></i>
+                    <% end %>
+                </td>
+            </tr>
+            <%end%>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Vendedor</th>
+                <th>Parte</th>
+                <th>N&uacute;mero de cat&aacute;logo</th>
+                <th>Precio</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <%= button_to "Crear un nuevo precio", {controller: "prices", action: "new"}, class: "btn btn-secondary" %>
+</div>

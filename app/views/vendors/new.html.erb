@@ -1,0 +1,61 @@
+<br />
+<%if @vendor.errors.any? %>
+    <div id="error_explanation">
+        <h2><%= pluralize(@vendor.errors.count, "Error") %>
+        No es posible realizar la acción :</h2>
+        <ul>
+            <%@vendor.errors.full_messages.each do |msg|%>
+                <li><%= msg %></li>
+            <%end%>
+        </ul>
+    </div>
+<%end%>
+
+<br />
+
+<%if @vendor.id == nil%>
+    <%@action_name = "create"%>
+    <%else%>
+    <%@action_name = "update"%>
+<%end%>
+
+<div class="formbody">
+    <div class="container">
+        <div class="form-group">
+            <%=button_to "Volver atrás", {controller: "vendors", action: "index"}, class: "btn btn-secondary"%>
+        </div>
+
+        <p class="h2 text-center">Nuevo vendedor</p>
+        <%=form_for :vendor, url:@action_name do |vendor_form|%>
+            <div class="form-group">
+                <%= vendor_form.label("Nombre completo: ") %>
+                <%= vendor_form.text_field :name, placeholder: "Ingresa tu nombre completo", :required => true, class: "form-control"%>
+            </div>
+            <div class="form-group">
+                <%= vendor_form.label("Dirección: ") %>
+                <%= vendor_form.text_field :address, placeholder: "Ingresa tu dirección", :required => true, class: "form-control"%>
+            </div>
+            <div class="form-group">
+                <%= vendor_form.label("Ciudad: ") %>
+                <%= vendor_form.collection_select(:city, City.all, :id, :name, {prompt: "Selecciona una ciudad"}, {class: "form-control"}) %>
+            </div>
+            <div class="form-group">
+                <%= vendor_form.label("Teléfono: ") %>
+                <%= vendor_form.text_field :phone, placeholder: "Ingresa tu teléfono", :required => true, class: "form-control"%>
+            </div>
+            <div class="form-group">
+                <%= vendor_form.label("Región: ") %>
+                <%= vendor_form.collection_select(:region, Region.all, :id, :name, {prompt: "Selecciona una región"}, {class: "form-control"}) %>
+            </div>
+
+            <div class="form-group">
+                <% if @vendor.id == nil %>
+                    <%= vendor_form.submit "Crear", class: "btn btn-primary btn-block" %>
+                <% else %>
+                    <%= vendor_form.hidden_field :id %>
+                    <%= vendor_form.submit "Actualizar", class: "btn btn-primary btn-block" %>
+                <% end %>
+            </div>
+        <%end%>
+    </div>
+</div>

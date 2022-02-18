@@ -1,0 +1,42 @@
+<div class="form-group" style="width: 800px; height: 800px; margin: 0 auto; margin-top: 50px; border-radius: 10px; border-radius: 05px;">
+    <h1>Partes</h1>
+    <br>
+    <table id="table" class="display table table-hover">
+        <thead class="thead-dark">
+            <tr>
+                <th>Identificador</th>
+                <th>Descripción</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </thead>
+        <tbody>
+            <%@all_parts.each do |x|%>
+            <tr>
+                <td><%=x.id%></td>
+                <td><%=x.description%></td>
+                <td>
+                    <%= link_to controller: "parts", action: "edit", id:x.id do %>
+                        <i class="far fa-edit fa-2x"></i>
+                    <% end %>
+                </td>
+                <td>
+                    <%= link_to controller: "parts", action: "delete", id:x.id, data: { confirm: '¿Estás seguro?' } do %>
+                        <i class="far fa-trash-alt fa-2x"></i>
+                    <% end %>
+                </td>
+            </tr>
+            <%end%>
+        </tbody>
+        <tfoot>
+            <tr>
+                <th>Identificador</th>
+                <th>Descripción</th>
+                <th>Editar</th>
+                <th>Eliminar</th>
+            </tr>
+        </tfoot>
+    </table>
+
+    <%= button_to "Crear una nueva parte", {controller: "parts", action: "new"}, class: "btn btn-secondary" %>
+</div>
